@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function NotFound() {
   return (
-    <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div className="flex items-center justify-center min-h-[80vh] px-4 bg-gradient-to-br from-blue-50 to-indigo-50">
       <div className="w-full max-w-lg text-center">
         <div className="relative">
           <div className="absolute rounded-lg opacity-25 -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 blur"></div>

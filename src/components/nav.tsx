@@ -14,17 +14,11 @@ function Nav() {
           </Link>
 
           <div className="items-center hidden space-x-8 md:flex">
-            <a href="#sobre" className="text-gray-600 transition-colors hover:text-indigo-600">
-              Sobre
-            </a>
-            <a href="/#planos" className="text-gray-600 transition-colors hover:text-indigo-600">
-              Planos
-            </a>
-            <Link to="/institutionregister" className="text-gray-600 transition-colors hover:text-indigo-600">
+            <Link to="/registerInstitution" className="text-gray-600 transition-colors hover:text-indigo-600">
               Registrar instituições
             </Link>
             <Link
-              to="/userlogin"
+              to="/login"
               className="px-6 py-2 text-white transition-colors bg-indigo-600 rounded-full hover:bg-indigo-700"
             >
               Login

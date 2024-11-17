@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import Features from "../components/features";
 import ContactForm from "../components/contact-form";
+import { Link } from "react-router-dom";
 
 function Home() {
   return (
@@ -21,13 +22,19 @@ function Home() {
             </p>
 
             <div className="flex flex-col justify-center gap-4 mt-10 sm:flex-row">
-              <button className="inline-flex items-center px-8 py-3 text-base font-medium text-white transition-colors bg-blue-600 border border-transparent rounded-full hover:bg-blue-700">
+              <Link
+                to="registerInstitution"
+                className="inline-flex items-center px-8 py-3 text-base font-medium text-white transition-colors bg-blue-600 border border-transparent rounded-full hover:bg-blue-700"
+              >
                 Experimente Agora
                 <ArrowRight className="w-5 h-5 ml-2" />
-              </button>
-              <button className="inline-flex items-center px-8 py-3 text-base font-medium text-blue-600 transition-colors border border-transparent rounded-full bg-blue-50 hover:bg-blue-100">
+              </Link>
+              <a
+                href="#sobre"
+                className="inline-flex items-center px-8 py-3 text-base font-medium text-blue-600 transition-colors border border-transparent rounded-full bg-blue-50 hover:bg-blue-100"
+              >
                 Saiba Mais
-              </button>
+              </a>
             </div>
 
             <div className="mt-12">
