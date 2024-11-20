@@ -1,25 +1,18 @@
-import AxiosController from "../axios.controller";
-import LocalStorage from "../local-storage/localstorage.service";
+import AxiosService from "../axios.service";
+import LocalStorage from "../../hooks/storage/local-storage";
 import { AuthDto } from "./dto/auth.dto";
+import { Token } from "./dto/token.dto";
 
-export class AuthService extends AxiosController {
+export class AuthService extends AxiosService {
   constructor() {
     super("http://localhost:8080/auth");
   }
 
-  async auth(data: AuthDto): Promise<void> {
-    const response = await this.rest.post("/sign-in", data);
+  async auth(data: AuthDto): Promise<Token> {
+    const res = await this.rest.post("/sign-in", data);
 
-    const token = response.data;
-    if (token) {
-      // Salva o token no localStorage
-      LocalStorage.setItem("authToken", `Bearer ${token}`);
-      console.log("Token armazenado com sucesso.");
-    } else {
-      console.error("Nenhum token foi retornado na resposta.");
-    }
-  }
-  catch(error: Error) {
-    console.error("Erro durante a autenticação:", error);
+    const response: Token = res.data;
+
+    return response;
   }
 }

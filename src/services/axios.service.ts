@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 
-export default class AxiosController {
+export default class AxiosService {
   protected url: string;
 
   constructor(url: string) {
