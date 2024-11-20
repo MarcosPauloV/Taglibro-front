@@ -1,12 +1,12 @@
 class LocalStorage {
-  public static setItem(key: string, value: any) {
+  public static set(key: string, value: any) {
     localStorage.setItem(key, JSON.stringify(value));
   }
-  public static getItem(key: string) {
+  public static get(key: string) {
     const value = localStorage.getItem(key);
     return value ? JSON.parse(value) : null;
   }
-  public static removeItem(key: string) {
+  public static remove(key: string) {
     localStorage.removeItem(key);
   }
   public static clear() {
