@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { InstitutionService } from "../services/institution/institution.service";
-import { LegalNature } from "../services/institution/dto/create-institution.dto";
 import { CNPJ } from "../utils/masks/cnpj";
+import { LegalNature } from "../services/institution/enum/lega-nature";
+import { useStorage } from "../hooks/storage/use-sorage";
 
 function RegisteInstitution() {
   const institution = new InstitutionService();
+
+  const { getItem } = useStorage();
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -29,9 +32,7 @@ function RegisteInstitution() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const data = { ...institutionData };
-
-    console.log("Institution Data:", data);
-    institution.registerInstitution(data);
+    institution.create(data, getItem("token"));
   };
 
   return (
