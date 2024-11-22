@@ -1,7 +1,11 @@
 import { BookOpenCheck, Menu } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useStorage } from "../hooks/storage/use-sorage";
 
 function Nav() {
+  const { getItem } = useStorage();
+  const isLoggedIn = !!getItem("token");
+
   return (
     <nav className="fixed z-50 w-full shadow-sm bg-white/80 backdrop-blur-md">
       <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -14,15 +18,28 @@ function Nav() {
           </Link>
 
           <div className="items-center hidden space-x-8 md:flex">
-            <Link to="/registerInstitution" className="text-gray-600 transition-colors hover:text-indigo-600">
-              Registrar instituições
-            </Link>
-            <Link
-              to="/login"
-              className="px-6 py-2 text-white transition-colors bg-indigo-600 rounded-full hover:bg-indigo-700"
-            >
-              Login
-            </Link>
+            {!isLoggedIn ? (
+              <>
+                <Link to="/registerInstitution" className="text-gray-600 transition-colors hover:text-indigo-600">
+                  Registrar instituições
+                </Link>
+                <Link
+                  to="/login"
+                  className="px-6 py-2 text-white transition-colors bg-indigo-600 rounded-full hover:bg-indigo-700"
+                >
+                  Login
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to="/institution" className="text-gray-600 transition-colors hover:text-indigo-600">
+                  Instituição
+                </Link>
+                <Link to="/branch" className="text-gray-600 transition-colors hover:text-indigo-600">
+                  Filial
+                </Link>
+              </>
+            )}
           </div>
 
           <div className="md:hidden">
