@@ -1,20 +1,33 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { CNPJ } from "../utils/masks/cnpj";
 import { AuthService } from "../services/auth/auth.service";
-import { AuthDto, type } from "../services/auth/dto/auth.dto";
+import { type } from "../services/auth/dto/auth.dto";
+import { Token } from "../services/auth/dto/token.dto";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useStorage } from "../hooks/storage/use-sorage";
 
 export default function Login() {
   const auth = new AuthService();
+  const { setItem } = useStorage();
   const [showPassword, setShowPassword] = useState(false);
   const [userType, setUserType] = useState<type>(type.USER);
   const [formData, setFormData] = useState({
     identifier: "",
     password: "",
-    remember: false,
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (userType === type.INSTITUTION) {
+      setFormData({ identifier: "", password: "" });
+    } else {
+      setFormData({ identifier: "", password: "" });
+    }
+  }, [userType]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const { identifier, password } = formData;
@@ -24,16 +37,25 @@ export default function Login() {
       password,
       type: userType,
     };
+    try {
+      const response: Token = await auth.auth(data);
+      setItem("token", response.token);
+      setItem("accountId", response.accountId);
 
-    auth.auth(data);
-    console.log("Login:", { data });
+      toast.success("Login efetuado com sucesso!");
+
+      setTimeout(() => {
+        window.location.href = "/institution";
+      }, 2000);
+    } catch (error) {
+      toast.error("Usuário ou senha inválidos!");
+    }
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     let { value } = e.target;
     if (userType === type.INSTITUTION) {
       const cnpj = CNPJ(value);
-      console.log(cnpj);
       value = cnpj;
     }
 
@@ -42,6 +64,7 @@ export default function Login() {
 
   return (
     <div className="flex items-center justify-center w-screen h-[80vh] bg-gray-100">
+      <ToastContainer />
       <div className="w-full max-w-lg p-8 bg-white rounded-md shadow-md">
         <div className="w-full mb-6">
           <div className="flex items-center justify-center p-3 space-x-4 bg-gray-100 rounded-lg">
@@ -112,23 +135,6 @@ export default function Login() {
               </button>
             </div>
           </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember"
-                name="remember"
-                type="checkbox"
-                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                checked={formData.remember}
-                onChange={e => setFormData({ ...formData, remember: e.target.checked })}
-              />
-              <label htmlFor="remember" className="block ml-2 text-sm text-gray-900">
-                Lembrar de mim
-              </label>
-            </div>
-          </div>
-
           <div>
             <button
               type="submit"
