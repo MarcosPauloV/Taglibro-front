@@ -1,5 +1,4 @@
-export interface Address {
-  id: string;
+export interface AddressDto {
   country: string;
   city: string;
   state: string;

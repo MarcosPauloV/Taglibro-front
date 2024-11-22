@@ -3,8 +3,3 @@ export interface AuthDto {
   type: type;
   password: string;
 }
-
-export enum type {
-  INSTITUTION = "INSTITUTION",
-  USER = "USER",
-}

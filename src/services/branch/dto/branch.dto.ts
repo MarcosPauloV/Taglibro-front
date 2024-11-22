@@ -1,13 +1,11 @@
-import { Address } from "./adress.dto";
+import { AddressDto } from "./adress.dto";
 
-export interface Branch {
-  id: string;
+export interface BranchDto {
   name: string;
   cnpj: string;
   institutionId: string;
-  addressId: string;
   slug: string;
-  address: Address;
+  address: AddressDto;
   createdAt: string;
   updatedAt: string;
 }
