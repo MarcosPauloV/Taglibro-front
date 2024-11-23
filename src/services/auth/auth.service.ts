@@ -1,5 +1,4 @@
 import AxiosService from "../axios.service";
-import LocalStorage from "../../hooks/storage/local-storage";
 import { AuthDto } from "./dto/auth.dto";
 import { Token } from "./dto/token.dto";
 
@@ -11,8 +10,6 @@ export class AuthService extends AxiosService {
   async auth(data: AuthDto): Promise<Token> {
     const res = await this.rest.post("/sign-in", data);
 
-    const response: Token = res.data;
-
-    return response;
+    return res.data as Token;
   }
 }

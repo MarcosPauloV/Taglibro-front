@@ -1,7 +1,6 @@
 import { LegalNature } from "../enum/lega-nature";
 
-export interface InstitutionDto {
-  id: string;
+export interface InstitutionCreateDTO {
   name: string;
   cnpj: string;
   legalNature: LegalNature;
