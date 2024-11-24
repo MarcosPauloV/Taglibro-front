@@ -33,8 +33,6 @@ export class InstitutionService extends AxiosService {
       },
     });
 
-    console.log(res.data);
-
     return res.data;
   }
 

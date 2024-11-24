@@ -1,40 +1,36 @@
-import { useEffect, useState } from "react";
-import { useStorage } from "../hooks/storage/use-sorage";
-import { EmployeeService } from "../services/employee/employee.service";
 import { EmployeeDto } from "../services/employee/dto/employee.dto";
 
-export function EmployeeList() {
-  const employeeService = new EmployeeService();
-  const { getItem } = useStorage();
-  const [employees, setEmployees] = useState<EmployeeDto[]>([]);
+interface EmployeeListProps {
+  employees: EmployeeDto[];
+}
 
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        const data = await employeeService.getAll(getItem("companyId"), getItem("token"));
-        setEmployees(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetch();
-  }, []);
+export function EmployeeList({ employees }: EmployeeListProps) {
+  if (!Array.isArray(employees) || employees.length === 0) {
+    return (
+      <div className="flex flex-col items-center py-10 bg-gray-100">
+        <div className="w-full max-w-3xl p-8 bg-white shadow-lg rounded-xl">
+          <h1 className="mb-6 text-3xl font-semibold text-center text-gray-800">Lista de Funcionários</h1>
+          <p className="text-center text-gray-500">Nenhum funcionário encontrado.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <h1 className="mb-4 text-2xl font-semibold text-gray-800">Lista de Funcionários</h1>
-      {employees.length > 0 ? (
-        <ul className="space-y-2">
+    <div className="flex flex-col items-center py-10 bg-gray-100">
+      <div className="w-full max-w-3xl p-8 bg-white shadow-lg rounded-xl">
+        <h1 className="mb-6 text-3xl font-semibold text-center text-gray-800">Lista de Usuários e Alunos</h1>
+        <ul className="space-y-4">
           {employees.map(item => (
-            <li key={item.id} className="px-4 py-2 bg-green-100 border border-green-200 rounded-md hover:bg-green-200">
-              {item.name}
+            <li
+              key={item.id}
+              className="flex items-center justify-between p-4 transition border border-gray-200 rounded-lg shadow-sm bg-gray-50 hover:shadow-md"
+            >
+              <span className="text-lg font-medium text-gray-700">{item.name}</span>
             </li>
           ))}
         </ul>
-      ) : (
-        <p className="text-gray-500">Nenhum funcionário encontrado.</p>
-      )}
+      </div>
     </div>
   );
 }

@@ -8,15 +8,11 @@ export class BranchService extends AxiosService {
   }
 
   async create(branch: CreateBranchDto, token: string): Promise<CreateBranchDto> {
-    console.log(branch.address);
-
     const rer = await this.rest.post("/", branch, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-
-    console.log(rer);
 
     return rer.data;
   }
@@ -28,12 +24,11 @@ export class BranchService extends AxiosService {
       },
     });
 
-    console.log(branchs.data);
     return branchs.data;
   }
 
   async getById(id: string, token: string): Promise<BranchDto> {
-    return await this.rest.get(`/getBranchById/${id}`, {
+    return await this.rest.get(`/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -1,10 +1,22 @@
 import { BookOpenCheck, Menu } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useStorage } from "../hooks/storage/use-sorage";
+import { Link, useNavigate } from "react-router-dom";
+import { useStorage } from "../hooks/use-storage/use-sorage";
 
 function Nav() {
-  const { getItem } = useStorage();
+  const { getItem, removeItem } = useStorage();
   const isLoggedIn = !!getItem("token");
+  const role = getItem("type"); // Obtém a role do localStorage
+  const institutionId = getItem("institutionId"); // Obtém o institutionId do localStorage
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    removeItem("token");
+    removeItem("accountId");
+    removeItem("type");
+    removeItem("institutionId");
+    alert("Você saiu com sucesso!");
+    navigate("/login"); // Redireciona para a página de login
+  };
 
   return (
     <nav className="fixed z-50 w-full shadow-sm bg-white/80 backdrop-blur-md">
@@ -30,14 +42,36 @@ function Nav() {
                   Login
                 </Link>
               </>
+            ) : role === "USER" ? (
+              <>
+                <Link to="/branch" className="text-gray-600 transition-colors hover:text-indigo-600">
+                  Filiais
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 text-sm text-white transition-colors bg-red-600 rounded-full hover:bg-red-700"
+                >
+                  Sair
+                </button>
+              </>
             ) : (
               <>
-                <Link to="/institution" className="text-gray-600 transition-colors hover:text-indigo-600">
-                  Instituição
-                </Link>
-                <Link to="/branch" className="text-gray-600 transition-colors hover:text-indigo-600">
-                  Filial
-                </Link>
+                {role === "ADMIN" || institutionId ? (
+                  <>
+                    <Link to="/institution" className="text-gray-600 transition-colors hover:text-indigo-600">
+                      Instituição
+                    </Link>
+                    <Link to="/branch" className="text-gray-600 transition-colors hover:text-indigo-600">
+                      Filial
+                    </Link>
+                  </>
+                ) : null}
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 text-sm text-white transition-colors bg-red-600 rounded-full hover:bg-red-700"
+                >
+                  Sair
+                </button>
               </>
             )}
           </div>

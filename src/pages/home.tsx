@@ -1,6 +1,5 @@
 import { ArrowRight } from "lucide-react";
 import Features from "../components/features";
-import ContactForm from "../components/contact-form";
 import { Link } from "react-router-dom";
 
 function Home() {
@@ -41,15 +40,11 @@ function Home() {
               <p className="text-sm text-gray-500">
                 Ideal para instituições acadêmicas e organizações que buscam uma solução integrada de registro e gestão.
               </p>
-              <div className="flex justify-center mt-4 space-x-8">
-                {/* Logos de instituições ou exemplos poderiam ser inseridos aqui */}
-              </div>
             </div>
           </div>
         </div>
       </div>
       <Features />
-      <ContactForm />
     </>
   );
 }

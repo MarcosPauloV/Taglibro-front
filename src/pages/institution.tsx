@@ -1,69 +1,103 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { InstitutionService } from "../services/institution/institution.service";
-import { useStorage } from "../hooks/storage/use-sorage";
-import { BranchList } from "../components/branch-list";
-import { EmployeeList } from "../components/employee-list";
-import { BranchDto } from "../services/branch/dto/branch.dto";
-import { EmployeeDto } from "../services/employee/dto/employee.dto";
 import { BranchService } from "../services/branch/branch.service";
-import { EmployeeService } from "../services/employee/employee.service";
+import { useStorage } from "../hooks/use-storage/use-sorage";
+import { BranchList } from "../components/branch-list";
+import { BranchDto } from "../services/branch/dto/branch.dto";
+import { InstitutionDto } from "../services/institution/dto/institution.dto";
 import { BranchForm } from "../components/branch-form";
-import { EmployeeForm } from "../components/emplouee-form";
 
 function Institution() {
-  const institutionService = new InstitutionService();
-  const branchService = new BranchService();
-  const employeeService = new EmployeeService();
+  const { getItem, setItem } = useStorage();
+  const navigate = useNavigate();
+  const token = getItem("token");
+  const accountId = getItem("accountId");
 
-  const { getItem } = useStorage();
+  const [institution, setInstitution] = useState<InstitutionDto | null>(null);
   const [branches, setBranches] = useState<BranchDto[]>([]);
-  const [employees, setEmployees] = useState<EmployeeDto[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetch = async () => {
+    // Fetch Institution Data
+    const fetchInstitution = async () => {
+      if (!token || !accountId) {
+        console.warn("Token ou AccountId ausentes. Redirecionando...");
+        navigate("/login");
+        return;
+      }
+
       try {
-        const data = await institutionService.getById(getItem("institutionId"), getItem("token"));
+        const institutionService = new InstitutionService();
+        const institutionData = await institutionService.getById(accountId, token);
 
-        const branches = await branchService.getAll();
-        setBranches(branches);
-
-        const employees = await employeeService.getAll(getItem("institutionId"), getItem("token"));
-        setEmployees(employees);
+        setInstitution(institutionData);
+        setItem("institutionId", institutionData.id);
       } catch (error) {
-        console.error(error);
+        console.error("Erro ao carregar dados da instituição:", error);
+        navigate("/login");
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetch();
-  }, []);
+    fetchInstitution();
+  }, [token, accountId, navigate, setItem]);
+
+  useEffect(() => {
+    // Fetch Branch Data
+    const fetchBranches = async () => {
+      if (!token) {
+        console.warn("Token ausente. Redirecionando...");
+        navigate("/login");
+        return;
+      }
+
+      try {
+        const branchService = new BranchService();
+        const branchData = await branchService.getAll(token);
+
+        setBranches(branchData);
+      } catch (error) {
+        console.error("Erro ao carregar dados das filiais:", error);
+      }
+    };
+
+    fetchBranches();
+  }, [token, navigate]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <p className="text-lg text-gray-600">Carregando dados da instituição...</p>
+      </div>
+    );
+  }
+
+  if (!institution) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <p className="text-lg text-gray-600">Erro ao carregar dados da instituição. Redirecionando...</p>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <div className="min-h-screen bg-gray-100">
-        <nav className="bg-white shadow-sm">
-          <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center">
-                <h1 className="ml-2 text-xl font-bold text-gray-900">Company Dashboard</h1>
-              </div>
-            </div>
+    <div className="bg-gray-100">
+      <nav className="bg-white shadow-sm">
+        <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <h1 className="ml-2 text-xl font-bold text-gray-900">{institution.name}</h1>
           </div>
-        </nav>
-
-        <section className="flex flex-col gap-4 px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-            <BranchList branches={branches} setBranches={setBranches} />
-
-            <EmployeeList />
-          </div>
-
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-            <BranchForm employees={branches} setEmployees={setBranches} />
-            <EmployeeForm employees={employees} setEmployees={setEmployees} />
-          </div>
-        </section>
-      </div>
-    </>
+        </div>
+      </nav>
+      <section className="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-6 mb-12 md:grid-cols-2">
+          <BranchList branches={branches} setBranches={setBranches} />
+          <BranchForm branches={branches} setBranches={setBranches} />
+        </div>
+      </section>
+    </div>
   );
 }
 

@@ -5,45 +5,55 @@ import { CourseUpdateDTO } from "./dto/course.update.dto";
 
 export class CourseService extends AxiosService {
   constructor() {
-    super("http://localhost:3000/courses");
+    super("http://localhost:8080/course");
   }
 
-  async getAll(token: string): Promise<CourseDTO[]> {
-    return this.rest.get("/", {
+  async getAll(branchId: string, token: string): Promise<CourseDTO[]> {
+    const courses = await this.rest.get("/", {
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
+        branchid: branchId,
       },
     });
+
+    console.log(courses.data);
+
+    return courses.data;
   }
 
   async getById(id: string, token: string): Promise<CourseDTO> {
-    return this.rest.get(`/${id}`, {
+    console.log("id: ", id);
+    console.log("token: ", token);
+    const course = await this.rest.get(`/${id}`, {
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     });
+
+    return course.data;
   }
 
   async create(course: CourseCreateDTO, token: string): Promise<CourseDTO> {
-    return this.rest.post("/courses", course, {
+    return await this.rest.post("/", course, {
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
+        branchid: course.branchId,
       },
     });
   }
 
   async update(id: string, course: CourseUpdateDTO, token: string): Promise<CourseDTO> {
-    return this.rest.put(`/courses/${id}`, course, {
+    return await this.rest.put(`/courses/${id}`, course, {
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     });
   }
 
   async delete(id: string, token: string): Promise<void> {
-    return this.rest.delete(`/courses/${id}`, {
+    return await this.rest.delete(`/courses/${id}`, {
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     });
   }

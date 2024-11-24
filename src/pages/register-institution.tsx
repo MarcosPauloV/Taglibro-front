@@ -3,11 +3,14 @@ import { Eye, EyeOff } from "lucide-react";
 import { InstitutionService } from "../services/institution/institution.service";
 import { CNPJ } from "../utils/masks/cnpj";
 import { LegalNature } from "../services/institution/enum/lega-nature";
-import { useStorage } from "../hooks/storage/use-sorage";
+import { useStorage } from "../hooks/use-storage/use-sorage";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 function RegisteInstitution() {
   const institution = new InstitutionService();
-
+  const navigate = useNavigate();
   const { getItem } = useStorage();
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -29,14 +32,33 @@ function RegisteInstitution() {
     setInstitutionData({ ...institutionData, [name]: value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const data = { ...institutionData };
-    institution.create(data, getItem("token"));
+    try {
+      await institution.create(data, getItem("token"));
+
+      setInstitutionData({
+        name: "",
+        cnpj: "",
+        password: "",
+        legalNature: LegalNature.PRIVATE,
+      });
+
+      toast.success("Instituição cadastrada com sucesso!");
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } catch (error) {
+      console.error("Erro ao cadastrar a instituição:", error);
+      toast.error("Erro ao cadastrar a instituição.");
+    }
   };
 
   return (
     <div className="flex items-center justify-center w-screen h-[80vh] bg-gray-100">
+      <ToastContainer />
       <div className="flex flex-col justify-center w-full max-w-lg p-8 bg-white rounded-md shadow-md">
         <h1 className="mb-4 text-2xl font-bold text-center">Registro da Instituição</h1>
         <form className="space-y-4" onSubmit={handleSubmit}>
